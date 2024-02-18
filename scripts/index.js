@@ -22,16 +22,15 @@ function addCard(removeCard) {
   
   cards.append(cardElement); // показали карточку на странице
 
-  const card = cards.querySelector('.card'); // нашли карточку
-  const deleteButton = card.querySelector('.card__delete-button'); // нашли кнопку удаления
+  const deleteButton = cardElement.querySelector('.card__delete-button'); // нашли кнопку удаления
 
   deleteButton.addEventListener('click', removeCard); // добавили обработчик события для кнопки удаления
 
 };
 
 function removeCard() {
-  const card = cards.querySelector('.card'); // нашли карточку; код повторяется - плохо
-  const deleteButton = card.querySelector('.card__delete-button'); // нашли кнопку удаления; код повторяется - плохо
+  const card = cards.querySelector('.card');
+  const deleteButton = card.querySelector('.card__delete-button');
   const cardItem = deleteButton.closest('.card');
   cardItem.remove();
 }; // добавили функцию удаления ближайшей карточки-родителя по отношению к нажатой кнопке
