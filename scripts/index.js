@@ -20,6 +20,7 @@ function addCard(cardsData, removeCard) {
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true); // склонировали содержимое темплейта карточки
 
   cardElement.querySelector('.card__image').src = cardsData['link']; // положили урл картинки
+  cardElement.querySelector('.card__image').alt = cardsData['alt']; // положили alt в картинку
   cardElement.querySelector('.card__title').textContent = cardsData['name']; // положили тайтл
   
   cards.append(cardElement); // показали карточку на странице
