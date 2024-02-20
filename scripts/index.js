@@ -36,9 +36,9 @@ function createCard(cardsData, removeCard) {
 function addCard(cardsElements) {  
   // forEach прошёлся по готовому массиву
   cardsElements.forEach(cardElement => {
-    fragment.appendChild(cardElement); // положили карточку во фрагмент DOM, чтобы не рендерить на каждой итерации
+    fragment.append(cardElement); // положили карточку во фрагмент DOM, чтобы не рендерить на каждой итерации
   });
-  cards.append(fragment); // положили свёрстанный фрасписок карточек из фрагмента в контейнер (один рендер вместо 6)
+  cards.append(fragment); // положили свёрстанный список карточек из фрагмента в контейнер (один рендер вместо 6)
 };
 
 // добавили функцию удаления ближайшей карточки-родителя по отношению к нажатой кнопке; нажатую кнопку получили через дефолтный аргумент event, который есть у каждого addEventListener
