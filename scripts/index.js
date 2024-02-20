@@ -14,11 +14,13 @@ const cardTemplate = document.querySelector('#card-template').content; // заб
 const cards = document.querySelector('.places__list'); // забрали контейнер, в который будем класть карточки
 
 // функция добавления карточки
-function addCard(removeCard) {
+function addCard(cardsData, removeCard) {
+  // cardsData это данные ОДНОЙ карточки
+
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true); // склонировали содержимое темплейта карточки
 
-  cardElement.querySelector('.card__image').src = 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg'; // положили урл картинки
-  cardElement.querySelector('.card__title').textContent = 'Архыз'; // положили тайтл
+  cardElement.querySelector('.card__image').src = cardsData['link']; // положили урл картинки
+  cardElement.querySelector('.card__title').textContent = cardsData['name']; // положили тайтл
   
   cards.append(cardElement); // показали карточку на странице
 
@@ -28,11 +30,12 @@ function addCard(removeCard) {
 
 };
 
-function removeCard() {
-  const card = cards.querySelector('.card');
-  const deleteButton = card.querySelector('.card__delete-button');
-  const cardItem = deleteButton.closest('.card');
-  cardItem.remove();
-}; // добавили функцию удаления ближайшей карточки-родителя по отношению к нажатой кнопке
+// добавили функцию удаления ближайшей карточки-родителя по отношению к нажатой кнопке; нажатую кнопку получили через дефолтный аргумент event, который есть у каждого addEventListener
+function removeCard(event) {
+  event.target.closest('.card').remove();
+};
 
-addCard(removeCard); // вызвали функцию добавления карточки и передали ей функцию удаления карточки в качестве аргумента
+// foreach перебрал массив и для каждой карточки вызвал функцию  добавления карточки и передал ей данные карточки и функцию удаления карточки в качестве аргументов
+initialCards.forEach(card => {
+  addCard(card, removeCard);
+});
