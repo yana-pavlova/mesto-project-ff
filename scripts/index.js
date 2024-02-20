@@ -10,6 +10,7 @@
 
 // @todo: Вывести карточки на страницу
 
+const fragment = new DocumentFragment(); // сделали объект фрагмента DOM через конструктор, чтобы облегчить рендер DOM
 const cardTemplate = document.querySelector('#card-template').content; // забрали шаблон
 const cards = document.querySelector('.places__list'); // забрали контейнер, в который будем класть карточки
 
@@ -35,8 +36,9 @@ function createCard(cardsData, removeCard) {
 function addCard(cardsElements) {  
   // forEach прошёлся по готовому массиву
   cardsElements.forEach(cardElement => {
-    cards.append(cardElement); // положили карточку как последний элемент в контейнер карточек
+    fragment.appendChild(cardElement); // положили карточку во фрагмент DOM, чтобы не рендерить на каждой итерации
   });
+  cards.append(fragment); // положили свёрстанный фрасписок карточек из фрагмента в контейнер (один рендер вместо 6)
 };
 
 // добавили функцию удаления ближайшей карточки-родителя по отношению к нажатой кнопке; нажатую кнопку получили через дефолтный аргумент event, который есть у каждого addEventListener
