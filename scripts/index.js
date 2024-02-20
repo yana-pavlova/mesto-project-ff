@@ -15,7 +15,6 @@ const cards = document.querySelector('.places__list'); // забрали кон�
 
 // функция создания карточки
 function createCard(cardsData, removeCard) {
-  console.log(cardsData);
   // map перебрал массив и сделал новый массив с готовыми карточками
   const cardsElements = cardsData.map(card => {
     const cardElement = cardTemplate.querySelector('.card').cloneNode(true); // склонировали содержимое темплейта карточки
