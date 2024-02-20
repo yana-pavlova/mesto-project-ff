@@ -10,7 +10,6 @@
 
 // @todo: Вывести карточки на страницу
 
-const fragment = new DocumentFragment(); // сделали объект фрагмента DOM через конструктор, чтобы облегчить рендер DOM
 const cardTemplate = document.querySelector('#card-template').content; // забрали шаблон
 const cards = document.querySelector('.places__list'); // забрали контейнер, в который будем класть карточки
 
@@ -34,6 +33,8 @@ function createCard(cardsData, removeCard) {
 
 // функция добавления карточки на страницу
 function addCard(cardsElements) {  
+  const fragment = new DocumentFragment(); // сделали объект фрагмента DOM через конструктор, чтобы облегчить рендер DOM
+
   // forEach прошёлся по готовому массиву
   cardsElements.forEach(cardElement => {
     fragment.append(cardElement); // положили карточку во фрагмент DOM, чтобы не рендерить на каждой итерации
