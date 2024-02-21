@@ -13,18 +13,18 @@
 const cardTemplate = document.querySelector('#card-template').content; // забрали шаблон
 const cards = document.querySelector('.places__list'); // забрали контейнер, в который будем класть карточки
 
+cards.addEventListener('click', checkTarget); // добавили обработчик события для контейнера карточек (event delegation (если карточек будет 1000, вешать обработчик на каждую кнопку будет дорого))
+
+
 // функция создания карточки
-function createCard(cardsData, removeCard) {
+function createCard(cardsData, checkTarget) {
   // map перебрал массив и сделал новый массив с готовыми карточками
   const cardsElements = cardsData.map(card => {
     const cardElement = cardTemplate.querySelector('.card').cloneNode(true); // склонировали содержимое темплейта карточки
     cardElement.querySelector('.card__image').src = card['link']; // положили урл картинки
     cardElement.querySelector('.card__image').alt = card['alt']; // положили alt в картинку
     cardElement.querySelector('.card__title').textContent = card['name']; // положили тайтл
-    const deleteButton = cardElement.querySelector('.card__delete-button'); // нашли кнопку удаления
   
-    deleteButton.addEventListener('click', removeCard); // добавили обработчик события для кнопки удаления
-
     return cardElement; // одна свёрстанная карточка
   });
 
@@ -47,4 +47,11 @@ function removeCard(event) {
   event.target.closest('.card').remove();
 };
 
-addCard(createCard(initialCards, removeCard));
+// проверили, что таргет - кнопка удаления; если да, вызвали функцию удаления карточки
+function checkTarget(event) {
+  if (event.target.classList.value === 'card__delete-button') {
+    removeCard(event);
+  }
+};
+
+addCard(createCard(initialCards, checkTarget));
