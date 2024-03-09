@@ -1,14 +1,15 @@
-// @todo: Темплейт карточки
+import './pages/index.css';
 
-// клонируем содержимое тега template
+import Avatar from './images/avatar.jpg';
+import Logo from './images/logo.svg';
+import LikeInactive from './images/like-inactive.svg';
+import LikeActive from './images/like-active.svg';
+import EditIcon from './images/edit-icon.svg';
+import DeleteIcon from './images/delete-icon.svg';
+import Close from './images/close.svg';
+import AddIcon from './images/add-icon.svg';
 
-// @todo: DOM узлы
-
-// @todo: Функция создания карточки
-
-// @todo: Функция удаления карточки
-
-// @todo: Вывести карточки на страницу
+import { initialCards } from './cards.js';
 
 const cardTemplate = document.querySelector('#card-template').content; // забрали шаблон
 const cards = document.querySelector('.places__list'); // забрали контейнер, в который будем класть карточки
