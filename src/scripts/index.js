@@ -1,13 +1,13 @@
-import './pages/index.css';
+import '../pages/index.css';
 
-import Avatar from './images/avatar.jpg';
-import Logo from './images/logo.svg';
-import LikeInactive from './images/like-inactive.svg';
-import LikeActive from './images/like-active.svg';
-import EditIcon from './images/edit-icon.svg';
-import DeleteIcon from './images/delete-icon.svg';
-import Close from './images/close.svg';
-import AddIcon from './images/add-icon.svg';
+import Avatar from '../images/avatar.jpg';
+import Logo from '../images/logo.svg';
+import LikeInactive from '../images/like-inactive.svg';
+import LikeActive from '../images/like-active.svg';
+import EditIcon from '../images/edit-icon.svg';
+import DeleteIcon from '../images/delete-icon.svg';
+import Close from '../images/close.svg';
+import AddIcon from '../images/add-icon.svg';
 
 import { initialCards } from './cards.js';
 
