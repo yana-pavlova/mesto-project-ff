@@ -1,3 +1,5 @@
+// описана инициализация приложения и основная логика страницы: поиск DOM-элементов на странице и навешивание на них обработчиков событий; обработчики отправки форм, функция-обработчик события открытия модального окна для редактирования профиля; функция открытия модального окна изображения карточки. Также в index.js находится код, который отвечает за отображение шести карточек при открытии страницы.
+
 import '../pages/index.css';
 
 import Avatar from '../images/avatar.jpg';
@@ -9,28 +11,11 @@ import DeleteIcon from '../images/delete-icon.svg';
 import Close from '../images/close.svg';
 import AddIcon from '../images/add-icon.svg';
 
-import { initialCards } from './cards.js';
+import { initialCards } from './cards.js'; // импортировали массив с данными карточек
+import { createCard, removeCard } from '../components/card.js'; // импортировали функции создания и удаления карточки
+import { likeCard } from '../components/card.js';
 
-const cardTemplate = document.querySelector('#card-template').content; // забрали шаблон
 const cards = document.querySelector('.places__list'); // забрали контейнер, в который будем класть карточки
-
-// функция создания карточки
-function createCard(cardsData, removeCard) {
-  // map перебрал массив и сделал новый массив с готовыми карточками
-  const cardsElements = cardsData.map(card => {
-    const cardElement = cardTemplate.querySelector('.card').cloneNode(true); // склонировали содержимое темплейта карточки
-    cardElement.querySelector('.card__image').src = card['link']; // положили урл картинки
-    cardElement.querySelector('.card__image').alt = card['alt']; // положили alt в картинку
-    cardElement.querySelector('.card__title').textContent = card['name']; // положили тайтл
-    const deleteButton = cardElement.querySelector('.card__delete-button'); // нашли кнопку удаления
-  
-    deleteButton.addEventListener('click', removeCard); // добавили обработчик события для кнопки удаления
-
-    return cardElement; // одна свёрстанная карточка
-  });
-
-  return cardsElements; // массив с готовыми карточками
-}
 
 // функция добавления карточки на страницу
 function addCard(cardsElements) {  
@@ -40,12 +25,93 @@ function addCard(cardsElements) {
   cardsElements.forEach(cardElement => {
     fragment.append(cardElement); // положили карточку во фрагмент DOM, чтобы не рендерить на каждой итерации
   });
-  cards.append(fragment); // положили свёрстанный список карточек из фрагмента в контейнер (один рендер вместо 6)
+  cards.prepend(fragment); // положили свёрстанный список карточек из фрагмента в контейнер (один рендер вместо 6)
 };
 
-// добавили функцию удаления ближайшей карточки-родителя по отношению к нажатой кнопке; нажатую кнопку получили через дефолтный аргумент event, который есть у каждого addEventListener
-function removeCard(event) {
-  event.target.closest('.card').remove();
-};
+addCard(createCard(initialCards, removeCard, likeCard));
 
-addCard(createCard(initialCards, removeCard));
+// вызов модалки по клику
+import { openModal, closeModal } from '../components/modal.js';
+
+// забрали все модалки и каждому навесили свой клик
+const editButton = document.querySelector('.profile__edit-button');
+
+editButton.addEventListener('click', (event) => {
+  let popup = document.querySelector(".popup_type_edit");
+  openModal(event, popup);
+});
+
+const addButton = document.querySelector('.profile__add-button');
+addButton.addEventListener('click', (event) => {
+  let popup = document.querySelector(".popup_type_new-card");
+  openModal(event, popup);
+});
+
+// event delegation (клики по картинкам)
+const images = document.querySelector('.places__list');
+images.addEventListener('click', (event) => {
+  let popup = document.querySelector(".popup_type_image");
+  openModal(event, popup);
+});
+
+// слушатель вешается на все кнопки закрытия модалок
+const closeButtons = document.querySelectorAll('.popup__close');
+closeButtons.forEach(item => {
+  if(item.nodeName.toLowerCase() === "button") {
+    const popup = item.parentElement.parentElement;
+    item.addEventListener('click', (event) => closeModal(event, popup));
+  }
+});
+
+// слушатель вешается на оверлей (закрытие модалки при клике вне её)
+const overlays = document.querySelectorAll('.popup');
+overlays.forEach(item => {
+  item.addEventListener('click', (event) => closeModal(event, item));
+});
+
+/* УНЕСТИ В FORM.JS */
+
+/* форма редактирования профайла */
+const editProfileForm = document.forms['edit-profile'];
+// смена дефолтных значений
+editProfileForm.elements.name.defaultValue = document.querySelector(".profile__title").textContent;
+editProfileForm.elements.description.defaultValue = document.querySelector(".profile__description").textContent;
+
+const closeProfileFormButton = editProfileForm.parentElement.childNodes[1];
+closeProfileFormButton.addEventListener('click', () => editProfileForm.reset());
+
+editProfileForm.addEventListener('submit', handleProfileFormSubmit);
+
+/* форма добавления карточки */
+const addCardForm = document.forms['new-place'];
+addCardForm.addEventListener('submit', (event) => handleAddPlaceSubmit (event, createCard, addCard));
+
+function handleProfileFormSubmit(evt) {
+  evt.preventDefault();
+  const inputName = editProfileForm.elements.name.value;
+  const inputDescription = editProfileForm.elements.description.value;
+
+  const profileName = document.querySelector(".profile__title");
+  const profileODescription = document.querySelector(".profile__description")
+
+  profileName.textContent = inputName;
+  profileODescription.textContent = inputDescription;
+
+  let popup = document.querySelector(".popup_type_edit");
+  closeModal(evt, popup); // надо вызывать не тут
+}
+
+function handleAddPlaceSubmit(evt, createCard, addCard) {
+  evt.preventDefault();
+  const cardTitle = addCardForm.elements['place-name'].value;
+  const cardUrl = addCardForm.elements['link'].value;
+  const cardAlt = cardTitle;
+  const cardsData = [{
+    name: cardTitle,
+    link: cardUrl,
+    alt: cardAlt
+  }];
+  
+  addCard(createCard(cardsData, removeCard, likeCard));
+  addCardForm.reset();
+}
