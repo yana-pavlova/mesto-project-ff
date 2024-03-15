@@ -24,6 +24,7 @@ export function removeCard(event) {
   event.target.closest('.card').remove();
 };
 
+// функция лайка карточки
 export function likeCard(event) {
   event.target.classList.toggle('card__like-button_is-active');
 }
