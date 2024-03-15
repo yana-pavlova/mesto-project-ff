@@ -34,7 +34,7 @@
   </footer>
   <div class="popup popup_type_edit popup_is-animated">
     <div class="popup__content">
-      <button type="button" class="popup__close"></button>
+      <button type="button" class="popup__close form-close"></button>
       <h3 class="popup__title">Редактировать профиль</h3>
       <form class="popup__form" name="edit-profile">
         <input type="text" name="name" class="popup__input popup__input_type_name" placeholder="Имя" value="Жак-Ив Кусто" required>
@@ -45,7 +45,7 @@
   </div>
   <div class="popup popup_type_new-card popup_is-animated">
     <div class="popup__content">
-      <button type="button" class="popup__close"></button>
+      <button type="button" class="popup__close form-close"></button>
       <h3 class="popup__title">Новое место</h3>
       <form class="popup__form" name="new-place">
         <input type="text" name="place-name" class="popup__input popup__input_type_card-name" placeholder="Название" required>
@@ -56,9 +56,9 @@
   </div>
   <div class="popup popup_type_image popup_is-animated">
     <div class="popup__content popup__content_content_image">
-      <button type="button" class="popup__close"></button>
-      <img src="" alt="" class="popup__image">
-      <p class="popup__caption"></p>
+      <button type="button" id="image-close" class="popup__close"></button>
+      <img id="popup-image" src="" alt="" class="popup__image">
+      <p id="popup-description" class="popup__caption"></p>
     </div>
   </div>
 </div>
