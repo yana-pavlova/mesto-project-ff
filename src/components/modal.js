@@ -12,6 +12,7 @@ export function closeModal(popup) {
 
 // функция закрытия модального окна на нажатию клавиши Escape
 function closeModalByEsc(evt) {
+  // проверка на нажатие клавиши (в винде тригеррится это событие, если при заполнении выбрать одно из прошлых значений)
   if(evt.key) {
     if(evt.key.toLowerCase() === "escape") {
       const popup = document.querySelector('.popup_is-opened');
