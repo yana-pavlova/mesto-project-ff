@@ -1,5 +1,4 @@
 const cardTemplate = document.querySelector('#card-template').content; // забрали шаблон
-const imagePopup = document.querySelector(".popup_type_image"); // попап с картинкой
 
 // функция создания карточки
 export function createCard(card, removeCard, likeCard, openImageModal) {
@@ -15,7 +14,7 @@ export function createCard(card, removeCard, likeCard, openImageModal) {
   likeButton.addEventListener('click', likeCard); // добавили обработчик события для кнопки лайка
 
   // слушатель на картинку
-  image.addEventListener('click', () => openImageModal(image, cardTitle, imagePopup));
+  image.addEventListener('click', () => openImageModal(image, cardTitle));
   return cardElement; // одна свёрстанная карточка
 }
 

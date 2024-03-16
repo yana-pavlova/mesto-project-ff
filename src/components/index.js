@@ -19,6 +19,9 @@ const cards = document.querySelector('.places__list'); // забрали кон�
 /* попапы */
 const profileEditPopup = document.querySelector(".popup_type_edit");
 const newCardPopup = document.querySelector(".popup_type_new-card");
+const imagePopup = document.querySelector(".popup_type_image"); // попап с картинкой
+const popupImage = imagePopup.querySelector("#popup-image");
+const popupDescription = imagePopup.querySelector("#popup-description");
 
 /* кнопки и каринки для открытия попапов */
 const editButton = document.querySelector('.profile__edit-button');
@@ -85,17 +88,17 @@ function cleanForm(form) {
 }
 
 // функция открытия попапа с изображением
-function openImageModal (image, cardTitle, popup) {
-  const popupImage = popup.querySelector("#popup-image");
-  const popupDescription = popup.querySelector("#popup-description");
-  cleanImageModalData(popupImage, popupDescription);
+function openImageModal (image, cardTitle) {
+  cleanImageModalData();
   popupImage.src = image.src;
+  popupImage.alt = cardTitle.textContent;
   popupDescription.textContent = cardTitle.textContent;
-  openModal(popup);
+  openModal(imagePopup);
 }
 
-function cleanImageModalData (popupImage, popupDescription) {
+function cleanImageModalData () {
   popupImage.src = "";
+  popupImage.alt = "";
   popupDescription.textContent = "";
 }
 
