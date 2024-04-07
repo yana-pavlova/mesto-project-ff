@@ -83,7 +83,7 @@ export function clearValidation(form, config) {
   })
 }
 
-// показать ошибку "по урлу нет ихображения"
+// показать ошибку "по урлу нет изображения" для формы добавления карточки и смены аватара пользователя
 export function showUrlImageError(evt) {
   let errorMessage = 'Вставьте ссылку на изображение';
   let formError;

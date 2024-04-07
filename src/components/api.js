@@ -3,7 +3,7 @@ const baseUrl = 'https://mesto.nomoreparties.co/v1/wff-cohort-11/'; // путь 
 export let userId; // ID авторизованного пользователя
 
 // забрать все карточки
-export const fetchCardsFromServer = () => {
+export const fetchCards = () => {
   return fetch(`${baseUrl}cards`, {
     method: 'GET',
     headers: {
@@ -23,13 +23,19 @@ export const fetchUserData = () => {
   })
     .then((res) => handleError(res))
     .then((res) => {
-      getUserId(res["_id"]);
+      fetchUserId(res["_id"]);
       return res
     })
 };
 
+// получить ID авторизованного пользователя
+const fetchUserId = (id) => {
+  userId = id;
+}
+
 // обновить данные пользователя
 export const updateUserData = (name, about) => {
+
   return fetch(`${baseUrl}users/me`, {
     method: 'PATCH',
     headers: {
@@ -45,6 +51,7 @@ export const updateUserData = (name, about) => {
 
 // обновить аватар пользователя
 export const updateUserAvatar = (url) => {
+
   return fetch(`${baseUrl}users/me/avatar`, {
     method: 'PATCH',
     headers: {
@@ -62,13 +69,8 @@ export const updateUserAvatar = (url) => {
     });
 }
 
-// получить данные авторизованного пользователя
-export const getUserId = (id) => {
-  userId = id;
-}
-
 // добавить карточку
-export const saveCardDataOnServer = (name, link) => {
+export const saveCardData = (name, link) => {
 
   return fetch(`${baseUrl}cards`, {
     method: 'POST',
@@ -122,27 +124,19 @@ export const addLike = (cardId) => {
       .then((res) => handleError(res))
 }
 
-// проверить, что по урлу находится изображение
-// некоторые сайты выбрасывают ошибку, даже если по урлу изображение: Access to fetch at 'https://media.cntraveller.com/photos/6343df288d5d266e2e66f082/16:9/w_2560%2Cc_limit/tokyoGettyImages-1031467664.jpeg' from origin 'http://localhost:8081' has been blocked by CORS policy
+//проверить, что урл на изображение
 export const checkIfUrlContainsImage = (url) => {
+
   return fetch(`${url}`, { method: 'HEAD' })
     .then((res) => {
-      if(res.ok) return res
+      if(res.ok) return res;
       return Promise.reject(`Ошибка: ${res.status}`)
     })
-    .catch(() => console.log(`Ошибка: ${res.status}`))
-    .then((res) => {
-      if(res && res.headers) { // в некоторых случаях нет headers
-        const contentType = res.headers.get('content-type');
-        const picRegExp = /image/i;
-        if(picRegExp.test(contentType)) return res // если content-type это image
-      }
-    })
-    .catch(() => console.log(`Ошибка: ${res.status}`))
 }
 
 // обработчик ошибок
 const handleError = (res) => {
   if(res.ok) return res.json()
+
   return Promise.reject(`Ошибка: ${res.status}`)
 }

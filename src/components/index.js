@@ -13,10 +13,9 @@ import ProfileEdit from '../images/profile-edit.svg'
 import { createCard } from './card.js';
 import { openModal, closeModal, closeModalByClickOnOverlay } from './modal.js';
 import { setEnableValidation, validationConfig, clearValidation, toggleButtonState, showUrlImageError } from './validation.js';
-import { saveCardDataOnServer, removeCard, fetchCardsFromServer, fetchUserData, updateUserData, updateUserAvatar, checkIfUrlContainsImage } from './api.js';
+import { saveCardData, removeCard, fetchCards, fetchUserData, updateUserData, updateUserAvatar, checkIfUrlContainsImage} from './api.js';
 
-const cards = document.querySelector('.places__list'); // забрали контейнер, в который будем класть карточки
-
+const cards = document.querySelector('.places__list'); // контейнер для карточек
 /* попапы */
 const profileEditPopup = document.querySelector(".popup_type_edit");
 const newCardPopup = document.querySelector(".popup_type_new-card");
@@ -25,31 +24,23 @@ const profileAvatarPopup = document.querySelector(".popup_type_profile_edit");
 const popupImage = imagePopup.querySelector("#popup-image");
 const popupDescription = imagePopup.querySelector("#popup-description");
 const profileAvatar = document.querySelector(".profile__image");
-const cardRemovePopup = document.querySelector(".popup_type_card-remove");
-
-/* кнопки и каринки для открытия попапов */
+export const cardRemovePopup = document.querySelector(".popup_type_card-remove");
+/* кнопки и картинки для открытия попапов */
 const editButton = document.querySelector('.profile__edit-button');
 const addButton = document.querySelector('.profile__add-button');
-
 // кнопки закрытия
 const closeButtons = document.querySelectorAll('.popup__close');
-
 // закрытие попапа при клике на оверлее
 const popups = document.querySelectorAll('.popup');
-
 /* форма редактирования профайла */
 const editProfileForm = document.forms['edit-profile'];
-
 /* форма добавления карточки */
 const addCardForm = document.forms['new-place'];
-
 /* форма обновления аватара */
 const editProfileAvatarForm = document.forms['edit-profile-avatar'];
-
 /* поля формы редактирования профайла */
 const profileName = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
-
 // форма подтверждения удаления карточки
 const cardRemovalForm = document.forms['card-remove'];
 
@@ -58,7 +49,7 @@ function addCard(cardElement) {
   cards.prepend(cardElement);
 };
 
-// добавление прелоадера; надо переместить!
+// добавление прелоадера
 function makePreloader(evt) {
   evt.submitter.textContent = "Сохранение...";
 }
@@ -72,38 +63,37 @@ function removePreloader(evt) {
 function handleProfileFormSubmit(evt) {
   evt.preventDefault();
 
-  // добавить прелоадер
-  makePreloader(evt);
-  
   const inputName = editProfileForm.elements.name.value;
   const inputDescription = editProfileForm.elements.description.value;
 
+  // добавить прелоадер
+  makePreloader(evt);
   // сохранение данные из формы в разметке
   profileName.textContent = inputName;
   profileDescription.textContent = inputDescription;
-
   // смена дефолтных значений в инпутах при каждом сохранении формы
   editProfileForm.elements.name.defaultValue = profileName.textContent;
   editProfileForm.elements.description.defaultValue = profileDescription.textContent;
 
+  // обновить данные пользователя на сервере
   updateUserData(inputName, inputDescription)
     .then(() => closeModal(profileEditPopup))
     .finally(() => removePreloader(evt))
 }
 
 // функция, обрабатывающая сабмит добавления карточки
-function handleAddPlaceSubmit(evt, createCard, addCard, saveCardDataOnServer) {
+function handleAddPlaceSubmit(evt, createCard, addCard, saveCardData) {
   evt.preventDefault();
-
-  makePreloader(evt);
   
   const cardTitle = addCardForm.elements['place-name'].value;
   const cardUrl = addCardForm.elements['link'].value;
   const addPlaceButton = addCardForm.elements[2];
 
-  //отправить данные на сервер, дождаться, а потом получить данные карточки и передать её данные (id карточки и id владельца) в createCard
-  checkIfUrlContainsImage(cardUrl)
-    .then(() => saveCardDataOnServer(cardTitle, cardUrl))
+  makePreloader(evt);
+
+  //отправить данные на сервер, получить данные карточки и передать её данные в createCard
+  checkIfUrlContainsImage(cardUrl) // проверить, что по урлу изображение (не работает, если cors выключены у запрашиваемого ресурса)
+    .then(() => saveCardData(cardTitle, cardUrl))
       .then(card => {
         const cardsData = {
           name: cardTitle,
@@ -129,9 +119,11 @@ function handleAddPlaceSubmit(evt, createCard, addCard, saveCardDataOnServer) {
 // функция, обрабатывающая сабмит обновления аватара
 function handleProfileAvatarFormSubmit(evt) {
   evt.preventDefault();
-  makePreloader(evt);
+
   const profilePicUrl = editProfileAvatarForm.elements['profile-url'].value;
-  checkIfUrlContainsImage(profilePicUrl)
+
+  makePreloader(evt);
+  checkIfUrlContainsImage(profilePicUrl) // проверить, что по урлу изображение (не работает, если cors выключены у запрашиваемого ресурса)
   .then(() => {
         updateUserAvatar(profilePicUrl)
         .then(() => {
@@ -141,16 +133,18 @@ function handleProfileAvatarFormSubmit(evt) {
         })      
         .catch(() => showUrlImageError(evt)) // если content-type это не image
   })
-  .catch(() => showUrlImageError(evt))
+  .catch((err) => console.log(err), showUrlImageError(evt))
   .finally(() => removePreloader(evt))
 }
 
 // функция, обрабатывающая сабмит подтверждения удаления карточки
 function handleCardRemovePopupSubmit(evt) {
   evt.preventDefault();
+
   // забираем ID из формы и удаляем карточку
   const id = evt.target.id;
   const card = document.getElementById(id);
+
   removeCard(id)
   .then(() => {
     card.remove();
@@ -172,7 +166,7 @@ function openImageModal (image, cardTitle) {
   openModal(imagePopup);
 }
 
-// функция очистики попапов
+// функция очистки попапов
 function cleanImageModalData () {
   popupImage.src = "";
   popupImage.alt = "";
@@ -194,7 +188,7 @@ function renderUserData() {
 
 // функция, забирающая карточки с сервера
 function getInitialCards() {
-  fetchCardsFromServer()
+  fetchCards()
     .then((res) => {
       res.forEach(item => addCard(createCard(item, openImageModal)))
     })
@@ -223,11 +217,12 @@ closeButtons.forEach(item => {
   const popup = item.closest('.popup');
   item.addEventListener('click', () => closeModal(popup));
 });
+
 popups.forEach(item => {
   item.addEventListener('click', (evt) => closeModalByClickOnOverlay(evt, item));
 });
 
-addCardForm.addEventListener('submit', (evt) => handleAddPlaceSubmit (evt, createCard, addCard, saveCardDataOnServer));
+addCardForm.addEventListener('submit', (evt) => handleAddPlaceSubmit (evt, createCard, addCard, saveCardData));
 
 editProfileForm.addEventListener('submit', handleProfileFormSubmit);
 
