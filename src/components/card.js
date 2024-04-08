@@ -4,7 +4,7 @@ import { cardRemovePopup } from './index.js';
 const cardTemplate = document.querySelector('#card-template').content; // забрали шаблон
 
 // функция создания карточки
-export function createCard(card, openImageModal, openCardRemovalConfirmationModal, removeLike, addLike) {
+export function createCard(card, openImageModal, openCardRemovalConfirmationModal, removeLike, addLike, hasBeenLikedInDOM) {
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
   const image = cardElement.querySelector('.card__image');
   const title = cardElement.querySelector('.card__title');
@@ -30,22 +30,8 @@ export function createCard(card, openImageModal, openCardRemovalConfirmationModa
   if(card.owner['_id'] === userId) deleteButton.addEventListener('click', () => openCardRemovalConfirmationModal(cardRemovePopup, cardId))
   else deleteButton.remove();
   
-  // слушатель для обработки лайка; вилка в зависимости от того, стоит сейчас лайк или нет
-  likeButton.addEventListener('click', (evt) => {
-    if(evt.target.classList.contains('card__like-button_is-active')) {
-      removeLike(card['_id'])
-        .then((res) => {
-          likeCount.textContent = res.likes.length;
-          evt.target.classList.remove('card__like-button_is-active')
-        })
-    } else {
-      addLike(card['_id'])
-        .then((res) => {
-          evt.target.classList.add('card__like-button_is-active');
-          likeCount.textContent = res.likes.length;
-        })
-    }
-  })
+  // слушатель для обработки лайка
+  likeButton.addEventListener('click', (evt) => {  hasBeenLikedInDOM(evt.target, likeCount, removeLike, addLike, card['_id'])})
 
   // слушатель на картинку
   image.addEventListener('click', () => openImageModal(image, title));
@@ -53,7 +39,7 @@ export function createCard(card, openImageModal, openCardRemovalConfirmationModa
   return cardElement; // одна свёрстанная карточка
 }
 
-// проверить, был ли уже поставлен лайк
+// проверить, был ли уже поставлен лайк на сервере
 function hasBeenLiked(likes, userId) {
   return likes.some(like => like['_id'] === userId);
 }

@@ -108,7 +108,7 @@ function handleAddPlaceSubmit(evt, createCard, addCard, saveCardData) {
           },
           likes: card.likes || [] // если карточка не с сервера, а создаётся вновь, лайков нет -> пустой массив
         };
-        addCard(createCard(cardsData, openImageModal, openCardRemovalConfirmationModal, removeLike, addLike));
+        addCard(createCard(cardsData, openImageModal, openCardRemovalConfirmationModal, removeLike, addLike, hasBeenLikedInDOM));
         closeModal(newCardPopup);
         cleanForm(addCardForm);
       })
@@ -176,6 +176,23 @@ function cleanImageModalData () {
   popupDescription.textContent = "";
 }
 
+// функция проверки, был ли поставлен лайк в DOM
+function hasBeenLikedInDOM(likeButton, likeCount, removeLike, addLike, cardId) {
+  if(likeButton.classList.contains('card__like-button_is-active')) {
+    removeLike(cardId)
+      .then((res) => {
+        likeCount.textContent = res.likes.length;
+        likeButton.classList.remove('card__like-button_is-active')
+      })
+  } else {
+    addLike(cardId)
+      .then((res) => {
+        likeButton.classList.add('card__like-button_is-active');
+        likeCount.textContent = res.likes.length;
+      })
+  }
+}
+
 // функция, отображающая данные пользователя на странице
 function renderUserData() {
   fetchUserData()
@@ -193,7 +210,7 @@ function renderUserData() {
 function getInitialCards() {
   fetchCards()
     .then((res) => {
-      res.reverse().forEach(item => addCard(createCard(item, openImageModal, openCardRemovalConfirmationModal, removeLike, addLike)))
+      res.reverse().forEach(item => addCard(createCard(item, openImageModal, openCardRemovalConfirmationModal, removeLike, addLike, hasBeenLikedInDOM)))
     })
 }
 
