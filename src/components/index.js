@@ -193,7 +193,7 @@ function renderUserData() {
 function getInitialCards() {
   fetchCards()
     .then((res) => {
-      res.forEach(item => addCard(createCard(item, openImageModal)))
+      res.reverse().forEach(item => addCard(createCard(item, openImageModal)))
     })
 }
 
