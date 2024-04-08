@@ -19,7 +19,7 @@ export function createCard(card, openImageModal, openCardRemovalConfirmationModa
 
   // подставляем данные картинки в разметку
   image.src = card.link;
-  image.alt = card.alt;
+  image.alt = card['name'];
   title.textContent = card['name'];
   likeCount.textContent = card.likes.length; // ставим количество лайков в разметке
 
