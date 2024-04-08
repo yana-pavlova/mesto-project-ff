@@ -76,11 +76,14 @@ export function toggleButtonState(inputArray, button, buttonClass) {
 
 // очистить ошибки валидации
 export function clearValidation(form, config) {
+  const submitButton = form.querySelector(config.submitButtonSelector);
   const inputs = Array.from(form.querySelectorAll(config.inputSelector));
   inputs.forEach(input => {
     const formError = form.querySelector(`.${input.name}-input-error`);
     hideInputError(formError, config.errorClass, input, config.inputErrorClass);
-  })
+  });
+  // сделать кнопку сабмита неактивной, чтобы после добавлени карточки при открытии попапа она была disabled
+  toggleButtonState(inputs, submitButton, config.inactiveButtonClass);
 }
 
 // показать ошибку "по урлу нет изображения" для формы добавления карточки и смены аватара пользователя
