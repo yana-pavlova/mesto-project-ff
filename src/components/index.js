@@ -68,16 +68,19 @@ function handleProfileFormSubmit(evt) {
 
   // добавить прелоадер
   makePreloader(evt);
-  // сохранение данные из формы в разметке
-  profileName.textContent = inputName;
-  profileDescription.textContent = inputDescription;
-  // смена дефолтных значений в инпутах при каждом сохранении формы
-  editProfileForm.elements.name.defaultValue = profileName.textContent;
-  editProfileForm.elements.description.defaultValue = profileDescription.textContent;
 
   // обновить данные пользователя на сервере
   updateUserData(inputName, inputDescription)
-    .then(() => closeModal(profileEditPopup))
+    .then(() => {
+      // сохранение данные из формы в разметке
+      profileName.textContent = inputName;
+      profileDescription.textContent = inputDescription;
+      // смена дефолтных значений в инпутах при каждом сохранении формы
+      editProfileForm.elements.name.defaultValue = profileName.textContent;
+      editProfileForm.elements.description.defaultValue = profileDescription.textContent;
+      // закрыли попап
+      closeModal(profileEditPopup);
+    })
     .finally(() => removePreloader(evt))
 }
 
