@@ -82,6 +82,7 @@ function handleProfileFormSubmit(evt) {
       closeModal(profileEditPopup);
     })
     .finally(() => removePreloader(evt))
+    .catch((err) => console.log(err))
 }
 
 // функция, обрабатывающая сабмит добавления карточки
@@ -113,7 +114,10 @@ function handleAddPlaceSubmit(evt, createCard, addCard, saveCardData) {
         cleanForm(addCardForm);
       })
       .finally(() => removePreloader(evt))
-    .catch(() => showUrlImageError(evt))
+    .catch((err) => {
+      showUrlImageError(evt);
+      console.log(err)
+    })
   
   // сделать кнопку неактивной
   toggleButtonState([addCardForm.elements['place-name'], addCardForm.elements['link']], addPlaceButton, validationConfig.inactiveButtonClass);
@@ -126,18 +130,21 @@ function handleProfileAvatarFormSubmit(evt) {
   const profilePicUrl = editProfileAvatarForm.elements['profile-url'].value;
 
   makePreloader(evt);
+  
   checkIfUrlContainsImage(profilePicUrl) // проверить, что по урлу изображение (не работает, если cors выключены у запрашиваемого ресурса)
-  .then(() => {
-        updateUserAvatar(profilePicUrl)
-        .then(() => {
-          profileAvatar.style['background-image'] = `url('${profilePicUrl}')`;
-          closeModal(profileAvatarPopup);
-          cleanForm(editProfileAvatarForm);
-        })      
-        .catch(() => showUrlImageError(evt)) // если content-type это не image
-  })
-  .catch((err) => console.log(err), showUrlImageError(evt))
-  .finally(() => removePreloader(evt))
+    .then(() => {
+          updateUserAvatar(profilePicUrl)
+            .then(() => {
+              profileAvatar.style['background-image'] = `url('${profilePicUrl}')`;
+              closeModal(profileAvatarPopup);
+              cleanForm(editProfileAvatarForm);
+            })
+    })
+    .finally(() => removePreloader(evt))
+    .catch((err) => {
+      showUrlImageError(evt);
+      console.log(err)
+    })
 }
 
 // функция, обрабатывающая сабмит подтверждения удаления карточки
@@ -153,6 +160,7 @@ function handleCardRemovePopupSubmit(evt) {
     card.remove();
     closeModal(cardRemovePopup);
   })
+  .catch((err) => console.log(err))
 }
 
 // функция очистки формы
@@ -184,12 +192,14 @@ function hasBeenLikedInDOM(likeButton, likeCount, removeLike, addLike, cardId) {
         likeCount.textContent = res.likes.length;
         likeButton.classList.remove('card__like-button_is-active')
       })
+      .catch((err) => console.log(err))
   } else {
     addLike(cardId)
       .then((res) => {
         likeButton.classList.add('card__like-button_is-active');
         likeCount.textContent = res.likes.length;
       })
+      .catch((err) => console.log(err))
   }
 }
 
@@ -204,6 +214,7 @@ function renderUserData() {
     editProfileForm.elements.name.defaultValue = res.name;
     editProfileForm.elements.description.defaultValue = res.about;
   })
+  .catch((err) => console.log(err))
 }
 
 // функция, забирающая карточки с сервера
@@ -212,6 +223,7 @@ function getInitialCards() {
     .then((res) => {
       res.reverse().forEach(item => addCard(createCard(item, openImageModal, openCardRemovalConfirmationModal, removeLike, addLike, hasBeenLikedInDOM)))
     })
+    .catch((err) => console.log(err))
 }
 
 // слушатели
@@ -257,3 +269,4 @@ setEnableValidation(validationConfig);
 const promises = [renderUserData, getInitialCards];
 Promise.all(promises)
   .then((resArr) => resArr.forEach(res => res()))
+  .catch((err) => console.log(err))

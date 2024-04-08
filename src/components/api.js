@@ -60,10 +60,6 @@ export const updateUserAvatar = (url) => {
       avatar: url
     })
   })
-    // выбрасываем ошибку, чтобы прокинуть её вызвавшей функции
-    .catch((err) => {
-      throw err;
-    });
 }
 
 // добавить карточку
