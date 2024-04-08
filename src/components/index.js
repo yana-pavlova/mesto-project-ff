@@ -11,9 +11,9 @@ import AddIcon from '../images/add-icon.svg';
 import ProfileEdit from '../images/profile-edit.svg'
 
 import { createCard } from './card.js';
-import { openModal, closeModal, closeModalByClickOnOverlay } from './modal.js';
+import { openModal, closeModal, closeModalByClickOnOverlay, openCardRemovalConfirmationModal } from './modal.js';
 import { setEnableValidation, validationConfig, clearValidation, toggleButtonState, showUrlImageError } from './validation.js';
-import { saveCardData, removeCard, fetchCards, fetchUserData, updateUserData, updateUserAvatar, checkIfUrlContainsImage} from './api.js';
+import { saveCardData, removeCard, fetchCards, fetchUserData, updateUserData, updateUserAvatar, checkIfUrlContainsImage, removeLike, addLike} from './api.js';
 
 const cards = document.querySelector('.places__list'); // контейнер для карточек
 /* попапы */
@@ -108,7 +108,7 @@ function handleAddPlaceSubmit(evt, createCard, addCard, saveCardData) {
           },
           likes: card.likes || [] // если карточка не с сервера, а создаётся вновь, лайков нет -> пустой массив
         };
-        addCard(createCard(cardsData, openImageModal));
+        addCard(createCard(cardsData, openImageModal, openCardRemovalConfirmationModal, removeLike, addLike));
         closeModal(newCardPopup);
         cleanForm(addCardForm);
       })
@@ -193,7 +193,7 @@ function renderUserData() {
 function getInitialCards() {
   fetchCards()
     .then((res) => {
-      res.reverse().forEach(item => addCard(createCard(item, openImageModal)))
+      res.reverse().forEach(item => addCard(createCard(item, openImageModal, openCardRemovalConfirmationModal, removeLike, addLike)))
     })
 }
 

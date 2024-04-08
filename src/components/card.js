@@ -1,12 +1,10 @@
-import { removeLike, addLike } from './api.js';
 import { userId } from './api.js';
-import { openCardRemovalConfirmationModal } from './modal.js';
 import { cardRemovePopup } from './index.js';
 
 const cardTemplate = document.querySelector('#card-template').content; // забрали шаблон
 
 // функция создания карточки
-export function createCard(card, openImageModal) {
+export function createCard(card, openImageModal, openCardRemovalConfirmationModal, removeLike, addLike) {
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
   const image = cardElement.querySelector('.card__image');
   const title = cardElement.querySelector('.card__title');
