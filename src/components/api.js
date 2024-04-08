@@ -4,24 +4,22 @@ export let userId; // ID авторизованного пользователя
 
 // забрать все карточки
 export const fetchCards = () => {
-  return fetch(`${baseUrl}cards`, {
+  return request(`${baseUrl}cards`, {
     method: 'GET',
     headers: {
       authorization: token
     }
   })
-    .then((res) => handleError(res))
 };
 
 // забрать данные пользователя
 export const fetchUserData = () => {
-  return fetch(`${baseUrl}users/me`, {
+  return request(`${baseUrl}users/me`, {
     method: 'GET',
     headers: {
       authorization: token
     }
   })
-    .then((res) => handleError(res))
     .then((res) => {
       fetchUserId(res["_id"]);
       return res
@@ -36,7 +34,7 @@ const fetchUserId = (id) => {
 // обновить данные пользователя
 export const updateUserData = (name, about) => {
 
-  return fetch(`${baseUrl}users/me`, {
+  return request(`${baseUrl}users/me`, {
     method: 'PATCH',
     headers: {
       authorization: token,
@@ -52,7 +50,7 @@ export const updateUserData = (name, about) => {
 // обновить аватар пользователя
 export const updateUserAvatar = (url) => {
 
-  return fetch(`${baseUrl}users/me/avatar`, {
+  return request(`${baseUrl}users/me/avatar`, {
     method: 'PATCH',
     headers: {
       authorization: token,
@@ -62,7 +60,6 @@ export const updateUserAvatar = (url) => {
       avatar: url
     })
   })
-    .then((res) => handleError(res))
     // выбрасываем ошибку, чтобы прокинуть её вызвавшей функции
     .catch((err) => {
       throw err;
@@ -72,7 +69,7 @@ export const updateUserAvatar = (url) => {
 // добавить карточку
 export const saveCardData = (name, link) => {
 
-  return fetch(`${baseUrl}cards`, {
+  return request(`${baseUrl}cards`, {
     method: 'POST',
     headers: {
       authorization: token,
@@ -83,14 +80,12 @@ export const saveCardData = (name, link) => {
       link: link
     })
   })
-    .then((res) => handleError(res))
     .then((card) => card)
 };
 
 // удалить карточку
 export const removeCard = (cardId) => {
-
-  return fetch(`${baseUrl}cards/${cardId}`, {
+  return request(`${baseUrl}cards/${cardId}`, {
     method: 'DELETE',
     headers: {
       authorization: token
@@ -100,33 +95,28 @@ export const removeCard = (cardId) => {
 
 // удалить лайк
 export const removeLike = (cardId) => {
-
-  return fetch(`${baseUrl}cards/likes/${cardId}`, {
+  return request(`${baseUrl}cards/likes/${cardId}`, {
     method: 'DELETE',
     headers: {
       authorization: token,
       'Content-type': 'application/json'
     }
   })
-    .then((res) => handleError(res))
 }
 
 // добавить лайк
 export const addLike = (cardId) => {
-
-  return fetch(`${baseUrl}cards/likes/${cardId}`, {
-      method: 'PUT',
-      headers: {
-        authorization: token,
-        'Content-type': 'application/json'
-      }
-    })
-      .then((res) => handleError(res))
+  return request(`${baseUrl}cards/likes/${cardId}`, {
+    method: 'PUT',
+    headers: {
+      authorization: token,
+      'Content-type': 'application/json'
+    }
+  })
 }
 
 //проверить, что урл на изображение
 export const checkIfUrlContainsImage = (url) => {
-
   return fetch(`${url}`, { method: 'HEAD' })
     .then((res) => {
       if(res.ok) return res;
@@ -134,8 +124,14 @@ export const checkIfUrlContainsImage = (url) => {
     })
 }
 
+// универcальная функция запроса на сервер
+const request = (url, options) => {
+
+  return fetch(url, options).then(checkResponse)
+}
+
 // обработчик ошибок
-const handleError = (res) => {
+const checkResponse = (res) => {
   if(res.ok) return res.json()
 
   return Promise.reject(`Ошибка: ${res.status}`)
