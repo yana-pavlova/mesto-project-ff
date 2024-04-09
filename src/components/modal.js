@@ -27,13 +27,3 @@ export function closeModalByClickOnOverlay(evt, popup) {
     closeModal(popup);
   };
 }
-
-// функция открытия модального окна для удаления карточки
-export function openCardRemovalConfirmationModal (popup, id) {
-  
-  const form = popup.querySelector(".popup__form");
-
-  openModal(popup);
-  // ID карточки присваивается ID формы
-  form.setAttribute("id", id);
-}

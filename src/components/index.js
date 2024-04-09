@@ -11,7 +11,7 @@ import AddIcon from '../images/add-icon.svg';
 import ProfileEdit from '../images/profile-edit.svg'
 
 import { createCard } from './card.js';
-import { openModal, closeModal, closeModalByClickOnOverlay, openCardRemovalConfirmationModal } from './modal.js';
+import { openModal, closeModal, closeModalByClickOnOverlay } from './modal.js';
 import { setEnableValidation, validationConfig, clearValidation, toggleButtonState, showUrlImageError } from './validation.js';
 import { saveCardData, removeCard, fetchCards, fetchUserData, updateUserData, updateUserAvatar, checkIfUrlContainsImage, removeLike, addLike} from './api.js';
 
@@ -182,6 +182,16 @@ function cleanImageModalData () {
   popupImage.src = "";
   popupImage.alt = "";
   popupDescription.textContent = "";
+}
+
+// функция открытия модального окна для удаления карточки
+function openCardRemovalConfirmationModal (id) {
+  
+  const form = cardRemovePopup.querySelector(".popup__form");
+
+  openModal(cardRemovePopup);
+  // ID карточки присваивается ID формы
+  form.setAttribute("id", id);
 }
 
 // функция проверки, был ли поставлен лайк в DOM

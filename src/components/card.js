@@ -1,5 +1,4 @@
 import { userId } from './api.js';
-import { cardRemovePopup } from './index.js';
 
 const cardTemplate = document.querySelector('#card-template').content; // забрали шаблон
 
@@ -27,7 +26,7 @@ export function createCard(card, openImageModal, openCardRemovalConfirmationModa
   if(hasBeenLiked(card.likes, userId)) likeButton.classList.add('card__like-button_is-active');
 
   // если карточки юзера, вешаем слушатель на кнопку удаления; для чужих карточек удаляем кнопку удаления
-  if(card.owner['_id'] === userId) deleteButton.addEventListener('click', () => openCardRemovalConfirmationModal(cardRemovePopup, cardId))
+  if(card.owner['_id'] === userId) deleteButton.addEventListener('click', () => openCardRemovalConfirmationModal(cardId))
   else deleteButton.remove();
   
   // слушатель для обработки лайка
