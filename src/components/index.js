@@ -261,7 +261,7 @@ closeButtons.forEach(item => {
 });
 
 popups.forEach(item => {
-  item.addEventListener('click', (evt) => closeModalByClickOnOverlay(evt, item));
+  item.addEventListener('mousedown', (evt) => closeModalByClickOnOverlay(evt, item));
 });
 
 addCardForm.addEventListener('submit', (evt) => handleAddPlaceSubmit (evt, createCard, addCard, saveCardData));
